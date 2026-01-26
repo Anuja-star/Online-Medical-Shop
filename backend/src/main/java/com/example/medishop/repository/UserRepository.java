@@ -10,9 +10,9 @@ import com.example.medishop.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    // Find by username (returns Optional)
+    // Find user by username
     Optional<User> findByUsername(String username);
 
-    // Find by email (returns User or null)
-    User findByEmail(String email);
+    // Find user by email
+    Optional<User> findByEmail(String email);
 }

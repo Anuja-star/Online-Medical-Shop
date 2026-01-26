@@ -11,7 +11,6 @@ function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (password !== confirm) {
       alert("❌ Passwords do not match!");
       return;
@@ -24,7 +23,8 @@ function Register() {
   return (
     <div
       className="relative min-h-screen flex items-center justify-center bg-cover bg-center p-4"
-      style={{ backgroundImage: "url('/medical.jpg')" }}
+      style={{ backgroundImage: "url('/medical.jpg')" }
+    }
     >
       <div className="absolute inset-0 bg-black/40"></div>
 
@@ -40,8 +40,7 @@ function Register() {
             </label>
             <input
               type="text"
-              required
-              value={username}
+              required value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/70 focus:bg-white focus:ring-indigo-500 focus:border-indigo-500"
             />
@@ -53,8 +52,7 @@ function Register() {
             </label>
             <input
               type="email"
-              required
-              value={email}
+              required value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/70 focus:bg-white focus:ring-indigo-500 focus:border-indigo-500"
             />
@@ -66,8 +64,7 @@ function Register() {
             </label>
             <input
               type="password"
-              required
-              value={password}
+              required value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/70 focus:bg-white focus:ring-indigo-500 focus:border-indigo-500"
             />
@@ -79,8 +76,7 @@ function Register() {
             </label>
             <input
               type="password"
-              required
-              value={confirm}
+              required value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/70 focus:bg-white focus:ring-indigo-500 focus:border-indigo-500"
             />

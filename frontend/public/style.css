@@ -1,148 +1,187 @@
-/* Reset */
-* {
+ Reset
+{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-/* 
+/* ================= BACKGROUND SLIDER ================= */
+
 body {
   font-family: "Poppins", sans-serif;
-  background: url("pharmacy-bg.jpg") no-repeat center center/cover;
-  color: white;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Slider container */
+.hero {
   height: 100vh;
-  overflow: hidden;
-  position: relative;
-} */
-
-/* Blur overlay */
-.bg-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
-  z-index: 1;
-}
-
-/* Navigation Bar */
-.navbar {
-  position: fixed;
-  top: 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 50px;
-  z-index: 10;
-}
-
-.nav-logo {
-  font-size: 22px;
-  font-weight: bold;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 25px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: white;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-.nav-links a:hover {
-  color: #8b5cf6;
-}
-
-/* Centered background area */
-.background {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  animation: bgSlider 15s infinite ease-in-out;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  position: relative;
 }
 
-/* Login & Register Form */
-.form-container {
+/* Background animation */
+@keyframes bgSlider {
+  0% {
+    background-image: url("/images/medical1.jpg");
+  }
+  33% {
+    background-image: url("/images/medical2.jpg");
+  }
+  66% {
+    background-image: url("/images/medical3.jpg");
+  }
+  100% {
+    background-image: url("/images/medical1.jpg");
+  }
+}
+
+/* Dark overlay */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+/* Content */
+.hero-content {
   position: relative;
   z-index: 2;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(20px);
-  padding: 40px;
-  border-radius: 20px;
-  width: 350px;
   text-align: center;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease-in-out, opacity 0.3s;
+  color: white;
+  animation: fadeUp 1.5s ease;
 }
 
-h2 {
-  margin-bottom: 10px;
-  color: #fff;
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 15px;
 }
 
-p {
-  margin-bottom: 20px;
-  font-size: 14px;
-  color: #ccc;
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+  color: #e5e5e5;
 }
 
-label {
-  display: block;
-  text-align: left;
-  margin-top: 10px;
-  font-size: 14px;
-  color: #f3f3f3;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 6px;
+/* Button animation */
+.hero-content button {
+  padding: 12px 30px;
   border: none;
-  border-radius: 6px;
-  outline: none;
-}
-
-button {
-  width: 100%;
-  margin-top: 20px;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
   background: #8b5cf6;
   color: white;
-  font-weight: bold;
+  font-size: 16px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
+  transition: transform 0.3s, background 0.3s;
 }
 
-button:hover {
+.hero-content button:hover {
+  transform: translateY(-3px);
   background: #7c3aed;
-  transform: scale(1.02);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    text-align: center;
-    padding: 10px 20px;
+/* Fade animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
   }
-
-  .nav-links {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .form-container {
-    width: 90%;
-    padding: 30px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
+
+/* If using Tailwind, add this to your global CSS or as a style tag */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Optional: Add some custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.order-history-page > * {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Optional: Add these styles to your global CSS */
+.bg-grid-white\/10 {
+  background-image: linear-gradient(to right, rgba(255,255,255,.1) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,.1) 1px, transparent 1px);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+
+
+/* ================= ADMIN DASHBOARD ================= */
+
+.sidebar-btn {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  background: hsl(210, 7%, 94%);
+  color: #140303;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease;
+}
+
+.sidebar-btn:hover {
+  background: #4b5563;
+  color: white;
+}
+
+.sidebar-btn .icon {
+  font-size: 20px;
+}
+
+.sidebar-btn.active {
+  background: #facc15;
+  color: #111827;
+}
+
+.logout {
+  background: hsl(8, 90%, 47%);
+  color: white;
+  margin-top: 20px;
+}
+
+.logout:hover {
+  background: #b91c1c;
+}
+
+
+

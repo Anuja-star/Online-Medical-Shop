@@ -7,19 +7,13 @@ function Login({ onLogin, message }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Save username for checkout page
-    localStorage.setItem("username", username);
-    localStorage.setItem("loginType", loginType);
     onLogin(username, password, loginType);
   };
 
   return (
     <div
       className="relative min-h-screen flex items-center justify-center bg-cover bg-center p-4"
-      style={{
-        backgroundImage: "url('/medical.jpg')",
-      }}
+      style={{ backgroundImage: "url('/medical.jpg')" }}
     >
       <div className="absolute inset-0 bg-black opacity-30"></div>
 
@@ -28,7 +22,7 @@ function Login({ onLogin, message }) {
           Login
         </h2>
 
-        <p className="text-xs text-gray-200 text-center mb-4">
+        <p className="text-sm text-gray-200 text-center mb-4">
           Select your login type and enter credentials.
         </p>
 
@@ -88,4 +82,3 @@ function Login({ onLogin, message }) {
 }
 
 export default Login;
-

@@ -6,9 +6,13 @@ import Login from "./Login";
 import Register from "./Register";
 import AdminDashboard from "./AdminDashboard";
 import UserShop from "./components/UserShop";
+import AboutPage from "./components/AboutPage";
+import ContactPage from "./components/ContactPage";
+import PrescriptionPage from "./components/PrescriptionPage";
 import CartPage from "./components/CartPage";
 import CheckoutPage from "./components/CheckoutPage";
 import OrderSuccess from "./components/OrderSuccess";
+import OrderHistory from "./components/OrderHistory";
 
 function AppWrapper() {
   const navigate = useNavigate();
@@ -17,32 +21,34 @@ function AppWrapper() {
   const [token, setToken] = useState(null);
   const [message, setMessage] = useState("");
 
-  const handleLogin = (username, password, type) => {
-    if (type === "admin" && username === "admin" && password === "pass") {
-      // Save to localStorage
-      localStorage.setItem("username", username);
-      localStorage.setItem("role", "admin");
-
-      setRole("admin");
-      setToken("admin_token");
-      navigate("/admin");
-
-    } else if (type === "user") {
-     
-      localStorage.setItem("username", username);
-      localStorage.setItem("role", "user");
-
-      setRole("user");
-      setToken("user_token");
-      navigate("/shop");
-
-    } else {
-      setMessage("❌ Invalid credentials");
+  const handleLogin = async (username, password, type) => {
+    try {
+      // Dummy backend login simulation
+      if (type === "admin" && username === "admin" && password === "pass") {
+        localStorage.setItem("userId", 0); // Admin id
+        localStorage.setItem("username", username);
+        localStorage.setItem("role", "ADMIN");
+        setRole("ADMIN");
+        setToken("admin_token");
+        navigate("/admin");
+      } else if (type === "user") {
+        const dummyUserId = 1; // Temporary user ID
+        localStorage.setItem("userId", dummyUserId);
+        localStorage.setItem("username", username);
+        localStorage.setItem("role", "USER");
+        setRole("USER");
+        setToken("user_token");
+        navigate("/shop");
+      } else {
+        setMessage({ type: "error", text: "❌ Invalid credentials" });
+      }
+    } catch (error) {
+      setMessage({ type: "error", text: "❌ Login failed. Please try again." });
     }
   };
 
-  
   const handleLogout = () => {
+    localStorage.removeItem("userId"); // 🔥 Important
     localStorage.removeItem("username");
     localStorage.removeItem("role");
     setRole(null);
@@ -53,35 +59,26 @@ function AppWrapper() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-
-      <Route
-        path="/login"
-        element={<Login onLogin={handleLogin} message={message} />}
-      />
-
+      <Route path="/login" element={<Login onLogin={handleLogin} message={message} />} />
       <Route path="/register" element={<Register />} />
+
       <Route
         path="/admin"
-        element={
-          role === "admin" ? (
-            <AdminDashboard onLogout={handleLogout} />
-          ) : (
-            <LandingPage />
-          )
-        }
+        element={role === "ADMIN" ? <AdminDashboard onLogout={handleLogout} /> : <LandingPage />}
       />
 
       <Route
         path="/shop"
-        element={
-          <UserShop token={token} onLogout={handleLogout} setMessage={setMessage} />
-        }
+        element={<UserShop token={token} onLogout={handleLogout} setMessage={setMessage} />}
       />
 
+      <Route path="/upload-prescriptions" element={<PrescriptionPage />} />
+      <Route path="/my-orders" element={<OrderHistory />} />
+       <Route path="/about" element={<AboutPage />} />
+       <Route path="/contact" element={<ContactPage />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/success" element={<OrderSuccess />} />
-
     </Routes>
   );
 }
@@ -95,4 +92,3 @@ function App() {
 }
 
 export default App;
-

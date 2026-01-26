@@ -15,14 +15,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "Username", unique = true, nullable = false)
     private String username;
 
     @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
-    private String password;  
+    private String password;
 
     // USER or ADMIN
     private String role = "USER";
@@ -30,7 +30,7 @@ public class User {
     public User() {}
 
     public User(String username, String email, String password) {
-        this.username = username;
+        this.username = username;   // ✅ FIXED
         this.email = email;
         this.password = password;
         this.role = "USER";
@@ -76,5 +76,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setName(String guest_User) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setPhone(String string) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
