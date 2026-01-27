@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import QRCode from "react-qr-code";
@@ -20,19 +19,22 @@ function CheckoutPage() {
 
   const username = localStorage.getItem("username");
 
-  // Load cart from localStorage
+  // 🔹 Load cart from localStorage
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(storedCart);
   }, []);
 
+  // 🔹 Handle form input with validation
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Validation: Names (Alphabets only)
-    if (name === "name" && !/^[A-Za-z\s]*$/.test(value)) return;
+    // ✅ Name: only alphabets and spaces
+    if (name === "name") {
+      if (!/^[A-Za-z\s]*$/.test(value)) return;
+    }
 
-    // Validation: Contact (Numbers only, max 10)
+    // ✅ Contact: only numbers, max 10 digits
     if (name === "contact") {
       if (!/^\d*$/.test(value)) return;
       if (value.length > 10) return;
@@ -41,39 +43,54 @@ function CheckoutPage() {
     setFormData({ ...formData, [name]: value });
   };
 
+  // 🔹 Total price
   const totalAmount = cart.reduce(
     (sum, item) => sum + Number(item.price) * Number(item.quantity || 1),
     0
   );
 
+  // 🔹 Place order
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
 
-    // Basic Guard Clauses
     if (!username) {
-      alert("❌ Please login first to place an order.");
+      alert("❌ Please login first");
       return;
     }
 
     if (cart.length === 0) {
-      alert("❌ Your cart is empty.");
+      alert("❌ Cart is empty");
       return;
     }
 
-    if (formData.contact.length !== 10) {
-      alert("❌ Contact number must be exactly 10 digits.");
+    // ✅ Final validation before submit
+    if (!/^[A-Za-z\s]+$/.test(formData.name)) {
+      alert("❌ Name should contain only alphabets");
       return;
     }
 
+    if (!/^\d{10}$/.test(formData.contact)) {
+      alert("❌ Contact number must be exactly 10 digits");
+      return;
+    }
+
+    // ✅ Proper medicine names
     const medicineNames = cart
       .map((item) => item.medicine_name || item.name)
       .join(", ");
 
+    // ✅ Items payload
     const itemsPayload = cart.map((item) => ({
       medicineId: Number(item.medicineId ?? item.id),
       quantity: Number(item.quantity || 1),
       price: Number(item.price),
     }));
+
+    // ❌ Prevent null IDs
+    if (itemsPayload.some((i) => !i.medicineId)) {
+      alert("❌ Invalid medicine in cart. Please clear cart and try again.");
+      return;
+    }
 
     const orderPayload = {
       username: username.trim(),
@@ -86,154 +103,130 @@ function CheckoutPage() {
       totalPrice: totalAmount,
     };
 
+    console.log("Order Payload:", orderPayload);
+
     try {
       setLoading(true);
 
-      // Sending data to backend
       await axios.post(API_URL, orderPayload, {
         headers: { "Content-Type": "application/json" },
       });
 
-      // Clear Cart
       localStorage.removeItem("cart");
       setCart([]);
-
-      // Success Notification based on payment type
-     
-    const successMsg = formData.payment === "upi" 
-  ? "✅ Order details submitted! Please ensure you have completed the UPI payment. We will verify and process your order." 
-  : "✅ Order placed successfully! Pay on delivery.";
-      
-      alert(successMsg);
-      
-      // Redirect to success page
+      alert("✅ Order placed successfully!");
       navigate("/success");
 
     } catch (error) {
       console.error("Order Error:", error.response || error);
-      alert(error.response?.data?.message || "❌ Failed to place order. Please try again.");
+      alert(error.response?.data?.message || "❌ Failed to place order");
     } finally {
       setLoading(false);
     }
   };
 
-  const upiQR = `upi://pay?pa=chavananuja1238@okicici&pn=MediShop&am=${totalAmount}&cu=INR`;
+  // 🔹 UPI QR
+  //const upiQR = `upi://pay?pa=chavananuja1238@okicici&pn=MediShop&am=${totalAmount}&cu=INR`;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-        
-        {/* LEFT SIDE: FORM & PAYMENT */}
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-xl font-bold text-gray-800 mb-6 border-b pb-2">
-              Delivery Information
-            </h2>
+    <div className="min-h-screen bg-gradient-to-b from-green-200 via-blue-200 to-purple-200 p-6">
+      <h2 className="text-2xl font-bold text-indigo-700 mb-6 text-center">
+        Checkout & Delivery
+      </h2>
 
-            <form onSubmit={handlePlaceOrder} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Enter your name"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                />
-              </div>
+      <div className="max-w-md mx-auto space-y-6">
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Shipping Address</label>
-                <textarea
-                  name="address"
-                  placeholder="Street, City, Pincode"
-                  required
-                  rows="3"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                />
-              </div>
+        {/* Delivery Form */}
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h3 className="text-lg font-bold mb-4">Delivery Details</h3>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Contact Number</label>
-                <input
-                  type="tel"
-                  name="contact"
-                  placeholder="10-digit number"
-                  required
-                  value={formData.contact}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                />
-              </div>
+          <form onSubmit={handlePlaceOrder} className="space-y-4">
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
-                <select
-                  name="payment"
-                  value={formData.payment}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
-                >
-                  <option value="cod">Cash on Delivery (COD)</option>
-                  <option value="upi">UPI / Online Payment</option>
-                </select>
-              </div>
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              required
+              value={formData.name}
+              onChange={handleChange}
+              pattern="[A-Za-z\s]+"
+              title="Name should contain only alphabets"
+              className="w-full border px-3 py-2 rounded"
+            />
 
-              <button
-                type="submit"
-                disabled={loading || cart.length === 0}
-                className={`w-full py-3 mt-4 text-white font-bold rounded-lg transition-all ${
-                  loading ? "bg-gray-400" : "bg-indigo-600 hover:bg-indigo-700 shadow-lg"
-                }`}
-              >
-                {loading ? "Processing..." : `Place Order (₹${totalAmount.toFixed(2)})`}
-              </button>
-            </form>
-          </div>
+            <textarea
+              name="address"
+              placeholder="Address"
+              required
+              value={formData.address}
+              onChange={handleChange}
+              className="w-full border px-3 py-2 rounded"
+            />
 
-          {/* UPI QR Code Section */}
-          {formData.payment === "upi" && cart.length > 0 && (
-            <div className="bg-indigo-50 p-6 rounded-2xl border-2 border-dashed border-indigo-300 text-center animate-fade-in">
-              <h3 className="text-md font-bold mb-3 text-indigo-800">Scan to Pay with UPI</h3>
-              <div className="inline-block bg-white p-3 rounded-xl shadow-sm mb-3">
-                <QRCode value={upiQR} size={150} />
-              </div>
-              <p className="text-xs text-indigo-600 font-medium">
-                Pay ₹{totalAmount.toFixed(2)} and then click 'Place Order' above.
-              </p>
-            </div>
-          )}
+            <input
+              type="tel"
+              name="contact"
+              placeholder="Contact Number"
+              required
+              value={formData.contact}
+              onChange={handleChange}
+              maxLength={10}
+              pattern="[0-9]{10}"
+              title="Contact number must be exactly 10 digits"
+              className="w-full border px-3 py-2 rounded"
+            />
+
+            <select
+              name="payment"
+              value={formData.payment}
+              onChange={handleChange}
+              className="w-full border px-3 py-2 rounded"
+            >
+              <option value="cod">Cash on Delivery</option>
+              <option value="upi">UPI / Online</option>
+            </select>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              {loading ? "Placing Order..." : "Place Order"}
+            </button>
+
+          </form>
         </div>
 
-        {/* RIGHT SIDE: ORDER SUMMARY */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
-          <h2 className="text-xl font-bold text-gray-800 mb-6 border-b pb-2">Order Summary</h2>
-          <div className="max-h-80 overflow-y-auto pr-2">
-            {cart.length > 0 ? (
-              cart.map((item, i) => (
-                <div key={i} className="flex justify-between items-center py-3 border-b border-gray-50">
-                  <div>
-                    <p className="font-semibold text-gray-700">{item.medicine_name || item.name}</p>
-                    <p className="text-xs text-gray-400">Qty: {item.quantity || 1}</p>
-                  </div>
-                  <p className="font-medium text-gray-800">₹{(item.price * (item.quantity || 1)).toFixed(2)}</p>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-400 italic text-center py-4">Your cart is empty</p>
-            )}
-          </div>
-          
-          <div className="mt-6 pt-4 border-t-2 border-gray-100">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600 font-medium">Grand Total</span>
-              <span className="text-2xl font-black text-green-600">₹{totalAmount.toFixed(2)}</span>
+        {/* UPI QR */}
+        {formData.payment === "upi" && cart.length > 0 && (
+          <div className="bg-white p-6 rounded-xl shadow-md text-center">
+            <h3 className="text-lg font-bold mb-3 text-green-700">
+              Scan & Pay ₹{totalAmount.toFixed(2)}
+            </h3>
+            <div className="flex justify-center bg-gray-100 p-4 rounded">
+              <QRCode value={upiQR} size={180} />
             </div>
           </div>
+        )}
+
+        {/* Order Summary */}
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h3 className="text-lg font-bold mb-4">Order Summary</h3>
+
+          {cart.map((item, i) => (
+            <div key={i} className="border-b py-2">
+              <p className="font-semibold">
+                {item.medicine_name || item.name}
+              </p>
+              <p className="text-sm text-gray-500">
+                ₹{item.price} × {item.quantity || 1}
+              </p>
+            </div>
+          ))}
+
+          <p className="font-bold mt-3 text-green-600">
+            Total: ₹{totalAmount.toFixed(2)}
+          </p>
         </div>
 
       </div>
