@@ -126,7 +126,7 @@ function CheckoutPage() {
   };
 
   // 🔹 UPI QR
-  //const upiQR = `upi://pay?pa=chavananuja1238@okicici&pn=MediShop&am=${totalAmount}&cu=INR`;
+  const upiQR = `upi://pay?pa=chavananuja1238@okicici&pn=MediShop&am=${totalAmount}&cu=INR`;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-200 via-blue-200 to-purple-200 p-6">
