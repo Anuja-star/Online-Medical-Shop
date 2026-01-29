@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const API_URL = "http://localhost:9091/api/medicines/user/medicines";
+const API_URL = "http://localhost:8080/api/medicines/user/medicines";
 
 const defaultMedicines = [
   { id: 1, name: "Paracetamol 500mg", description: "Fever & pain relief", price: 25, image: "/images/Paracetamol-500.jpg" },
