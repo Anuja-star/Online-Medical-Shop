@@ -17,32 +17,29 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // ✅ Enable CORS (uses WebConfig rules)
-            .cors()
-
-            // ✅ Disable CSRF for REST APIs
-            .and()
-            .csrf().disable()
-
-            // ✅ Authorization rules
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/",              // ⭐ Railway health check
                     "/api/**",
                     "/uploads/**"
                 ).permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll() // ⭐ IMPORTANT
             );
 
         return http.build();
     }
 
-    // 🔥 REQUIRED for Spring Security CORS
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOriginPatterns(List.of(
+            "http://localhost:3000",
+            "https://*.vercel.app"
+        ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -53,4 +50,3 @@ public class SecurityConfig {
         return source;
     }
 }
-
