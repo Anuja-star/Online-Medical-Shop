@@ -25,7 +25,7 @@ public class SecurityConfig {
                     "/api/**",
                     "/uploads/**"
                 ).permitAll()
-                .anyRequest().authenticated() // ⭐ IMPORTANT
+                .anyRequest().permitAll()
             );
 
         return http.build();
