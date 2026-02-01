@@ -79,9 +79,10 @@ function PrescriptionPage() {
     setLoading(true);
 
     const response = await axios.post(
-      "http://localhost:9091/api/prescriptions/upload/4",
-      formData
-    );
+  "https://online-medical-shop-production.up.railway.app/api/prescriptions/upload/4",
+  formData
+);
+
 
     alert("Prescription uploaded successfully");
 
