@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:9091/api";
+//const API_BASE_URL = "http://localhost:9091/api";
+const API_BASE_URL = "https://online-medical-shop-production.up.railway.app/api";
+
 
 function AdminDashboard({ onLogout }) {
   const [activePage, setActivePage] = useState("inventory");
