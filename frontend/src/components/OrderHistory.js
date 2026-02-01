@@ -14,7 +14,8 @@ import {
   Hash
 } from "lucide-react";
 
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "https://online-medical-shop-production.up.railway.app/api";
+
 
 const OrderHistory = () => {
   const navigate = useNavigate();
