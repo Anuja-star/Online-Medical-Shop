@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/medicines/user/medicines";
+const API_URL =
+  "https://online-medical-shop-production.up.railway.app/api/medicines/user/medicines";
 
 const defaultMedicines = [
   { id: 1, name: "Paracetamol 500mg", description: "Fever & pain relief", price: 25, image: "/images/Paracetamol-500.jpg" },
@@ -298,9 +299,9 @@ function UserShop() {
 <div className="h-48 bg-gray-50 flex items-center justify-center p-4">
     <img
       src={
-        med.isFromDb 
-          ? `http://localhost:9091/api/medicines/image/${med.imageUrl}` // Backend URL
-          : med.image // Static path like /images/Paracetamol.jpg
+       med.isFromDb 
+  ? `https://online-medical-shop-production.up.railway.app/api/medicines/image/${med.imageUrl}`
+  : med.image// Static path like /images/Paracetamol.jpg
       }
       alt={med.name}
       className="max-h-full max-w-full object-contain"
