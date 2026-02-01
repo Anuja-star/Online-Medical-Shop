@@ -3,7 +3,7 @@ import axios from "axios";
 import QRCode from "react-qr-code";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:8080/api/orders";
+const API_URL = "https://online-medical-shop-production.up.railway.app/api/orders";
 
 function CheckoutPage() {
   const [cart, setCart] = useState([]);
