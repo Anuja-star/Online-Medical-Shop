@@ -15,10 +15,11 @@ public class WebConfig implements WebMvcConfigurer {
      * → loads file from local folder: uploads/medicines/image.jpg
      */
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/")
-                .setCachePeriod(3600);
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("https://online-medical-shop-steel.vercel.app")
+                .allowedMethods("*")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 }
